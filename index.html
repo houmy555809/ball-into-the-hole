@@ -26,12 +26,21 @@
 				var vx=0,vy=1.5,x,y;
 				var dir=0;
 				var running=false;
-				var level=0;
-				var levels=[[[-100,-100],[],[-100,100],[]],
-					[[-100,-100],[[-200,-100,-200,100],[0,0,-170,0]],[-100,100],[]],
-					[[-100,-100],[[-150,0,0,150],[0,150,150,0]],[100,-100],[[0,-150,0,-50]]],
-					[[-100,-100],[[0,-100,0,0],[-100,-20,-100,20],[-120,50,120,50]],[120,0],[[-120,-50,-30,-50]]],
-					[[-100,-100],[[-100,-120,100,-120],[-100,120,100,120]],[100,-100],[[-80,-120,-80,30],[-60,-30,-60,120],[-40,-120,-40,30],[-20,-30,-20,120],[0,-120,0,30],[20,-30,20,120],[40,-120,40,30],[60,-30,60,120],[80,-120,80,30]]]
+				try{
+					var first=document.cookie.split(";")[0]
+					console.log(first);
+					console.log(first.substr(7,first.length-7));
+					var level=parseInt(first.substr(7,first.length-7),10);
+				}catch(e){
+					var level=0;
+				}
+				var levels=[[[-100,-100],[],[-100,100],[],[]],
+					[[-100,-100],[[-200,-100,-200,100],[0,0,-170,0]],[-100,100],[],[]],
+					[[-100,-100],[[-150,0,0,150],[0,150,150,0]],[100,-100],[[0,-150,0,-50]],[]],
+					[[-100,-100],[[0,-100,0,0],[-100,-20,-100,20],[-120,50,120,50]],[120,0],[[-120,-50,-30,-50]],[]],
+					[[-100,-100],[[-100,-120,100,-120],[-100,120,100,120]],[100,-100],[[-80,-120,-80,30],[-60,-30,-60,120],[-40,-120,-40,30],[-20,-30,-20,120],[0,-120,0,30],[20,-30,20,120],[40,-120,40,30],[60,-30,60,120],[80,-120,80,30]],[]],
+					[[-100,-100],[[0,-120,0,120]],[100,100],[],[[-100,100,100,-100]]],
+					[[-100,0],[[-100,-20,100,-20],[-100,20,100,20]],[100,0],[],[[0,0,-50,0]]]
 				];
 				window.addEventListener("keydown",function(e){
 					if(e.keyCode==32){
@@ -92,7 +101,7 @@
 					cxt.clearRect(0,0,cv.width,cv.height);
 					if(level>=levels.length){
 						running=false;
-						cxt.fillText("You win!",cv.width/2-50,cv.height/2);
+						cxt.fillText("恭喜通关！游戏会保存进度，下次更新的时候会有一些新关卡。敬请期待！",cv.width/2-50,cv.height/2);
 						return;
 					}
 					cxt.fillText("Level "+(level+1),cv.width/10,cv.height/10);
@@ -114,6 +123,16 @@
 						cxt.closePath();
 						cxt.stroke();
 					}
+					for(var i=0;i<levels[level][4].length;i++){
+						cxt.drawImage(hole,levels[level][4][i][0]-10+cv.width/2,levels[level][4][i][1]-10+cv.height/2,20,20);
+						cxt.fillStyle="black";
+						cxt.strokeStyle="black";
+						cxt.fillText((i+1)+"入",levels[level][4][i][0]+15+cv.width/2,levels[level][4][i][1]+cv.height/2);
+						cxt.drawImage(hole,levels[level][4][i][2]-10+cv.width/2,levels[level][4][i][3]-10+cv.height/2,20,20);
+						cxt.fillStyle="black";
+						cxt.strokeStyle="black";
+						cxt.fillText((i+1)+"出",levels[level][4][i][2]+15+cv.width/2,levels[level][4][i][3]+cv.height/2);
+					}
 					if(!running){
 						vx=Math.sin(dir)*1.5;
 						vy=Math.cos(dir)*1.5;
@@ -128,6 +147,7 @@
 					}else{
 						if(Math.pow(levels[level][2][0]-x,2)+Math.pow(levels[level][2][1]-y,2)<=100){
 							level++;
+							document.cookie="status="+level+";";
 							dir=0;
 							running=false;
 							return;
@@ -175,6 +195,16 @@
 							if(collide(x,y,x1,y1,x2,y2)){
 								running=false;
 								break;
+							}
+						}
+						for(var i=0;i<levels[level][4].length;i++){
+							var x1=levels[level][4][i][0];
+							var y1=levels[level][4][i][1];
+							var x2=levels[level][4][i][2];
+							var y2=levels[level][4][i][3];
+							if(Math.sqrt((x-x1)*(x-x1)+(y-y1)*(y-y1))<=5){
+								x=x2;
+								y=y2;
 							}
 						}
 					}
