@@ -26,14 +26,15 @@
 				var vx=0,vy=1.5,x,y;
 				var dir=0;
 				var running=false;
+				var level;
 				try{
 					var first=document.cookie.split(";")[0]
 					console.log(first);
 					console.log(first.substr(7,first.length-7));
-					var level=parseInt(first.substr(7,first.length-7),10);
+					level=parseInt(first.substr(7,first.length-7),10);
 				}catch(e){
 					console.log(e);
-					var level=0;
+					level=0;
 				}
 				if(level==NaN)level=0;
 				var levels=[[[-100,-100],[],[-100,100],[],[]],
