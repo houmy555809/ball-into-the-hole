@@ -30,8 +30,12 @@
 				try{
 					var first=document.cookie.split(";")[0]
 					console.log(first);
-					console.log(first.substr(7,first.length-7));
-					level=parseInt(first.substr(7,first.length-7),10);
+					if(first.length>=7){
+						console.log(first.substr(7,first.length-7));
+						level=parseInt(first.substr(7,first.length-7),10);
+					}else{
+						level=0;
+					}
 				}catch(e){
 					console.log(e);
 					level=0;
